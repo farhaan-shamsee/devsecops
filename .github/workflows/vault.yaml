@@ -1,0 +1,35 @@
+# .github/workflows/deploy.yml
+name: Deploy with Vault
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write   # Required for OIDC
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get secrets from Vault
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          method: jwt
+          role: github-actions-role
+          secrets: |
+            secret/data/myapp/production DB_PASSWORD | DB_PASSWORD ;
+            secret/data/myapp/production STRIPE_KEY  | STRIPE_KEY
+
+      - name: Use the secret (it's now an env var, masked in logs)
+        run: |
+          echo "DB_PASSWORD is set: ${DB_PASSWORD:+yes}"
+          echo "STRIPE_KEY is set: ${STRIPE_KEY:+yes}"
