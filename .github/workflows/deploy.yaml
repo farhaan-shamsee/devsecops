@@ -24,4 +24,4 @@ jobs:
       - name: Verify (temp token, expires after job)
         run: aws sts get-caller-identity
       - name: Upload to s3
-        run: aws s3 cp ./README.md s3://far-devsecops-buc/README.md
+        run: aws s3 sync ./README.md s3://far-devsecops-buc/README.md --delete
