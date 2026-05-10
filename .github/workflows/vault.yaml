@@ -23,6 +23,7 @@ jobs:
         uses: hashicorp/vault-action@v3
         with:
           url: ${{ secrets.VAULT_ADDR }}
+          namespace: ${{ secrets.VAULT_NAMESPACE }}
           method: jwt
           role: github-actions-role
           secrets: |
